@@ -1,5 +1,6 @@
 package dev.mm.core.coreservice.config.interceptor;
 
+import dev.mm.core.coreservice.annotations.RequiredOneOfRoles;
 import dev.mm.core.coreservice.annotations.RequiredRoles;
 import dev.mm.core.coreservice.constants.Uris;
 import dev.mm.core.coreservice.exception.ForbiddenException;
@@ -58,7 +59,21 @@ public class CustomHandlerInterceptor extends HandlerInterceptorAdapter {
                 for (long value : requiredRoles.value()) { requiredRolesIds.add(value); }
 
                 if (userRoleRepository.countByUserIdAndRoleIdIn(user.getId(), requiredRolesIds) != requiredRolesIds.size()) {
-                    throw new ForbiddenException("Missing some of the required role ids: " + requiredRolesIds);
+                    throw new ForbiddenException("Missing required role ids: " + requiredRolesIds);
+                }
+
+            }
+
+            RequiredOneOfRoles requiredOneOfRoles = handlerMethod.getMethodAnnotation(RequiredOneOfRoles.class);
+
+            if (requiredOneOfRoles != null && requiredOneOfRoles.value().length > 0) {
+
+                Set<Long> requiredOneOfRoleIds = new HashSet<>(requiredOneOfRoles.value().length);
+
+                for (long value : requiredOneOfRoles.value()) { requiredOneOfRoleIds.add(value); }
+
+                if (userRoleRepository.countByUserIdAndRoleIdIn(user.getId(), requiredOneOfRoleIds) < 1) {
+                    throw new ForbiddenException("Missing at least one of role ids: " + requiredOneOfRoleIds);
                 }
             }
         }

@@ -12,12 +12,12 @@ public class UserRoleDto extends IdAndTimestampsDto {
 
     private long userId;
     private long roleId;
-    private RoleDto roleDto;
+    private RoleDto role;
 
     public UserRoleDto(UserRole userRole) {
         super(userRole);
         this.userId = userRole.getUserId();
         this.roleId = userRole.getRoleId();
-        this.roleDto = new RoleDto(userRole.getRole());
+        this.role = new RoleDto(userRole.getRole());
     }
 }
