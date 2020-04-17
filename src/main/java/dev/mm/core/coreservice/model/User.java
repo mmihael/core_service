@@ -1,5 +1,6 @@
 package dev.mm.core.coreservice.model;
 
+import com.querydsl.core.annotations.QueryInit;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,7 @@ public class User extends BaseIdAndTimestamps {
     private boolean enabled;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "user", fetch = FetchType.LAZY)
+    // @QueryInit({"role.name", "role.id"})
     private Set<UserRole> userRoles = new HashSet<>();
 
 }

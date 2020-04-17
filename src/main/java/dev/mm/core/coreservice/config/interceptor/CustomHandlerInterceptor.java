@@ -17,11 +17,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -56,10 +53,12 @@ public class CustomHandlerInterceptor extends HandlerInterceptorAdapter {
 
             if (requiredRoles != null && requiredRoles.value().length > 0) {
 
-                Set<String> requiredRolesSet = new HashSet<>(Arrays.asList(requiredRoles.value()));
+                Set<Long> requiredRolesIds = new HashSet<>(requiredRoles.value().length);
 
-                if (userRoleRepository.countHowManyRolesUserHasFromSet(user.getId(), requiredRolesSet) != requiredRolesSet.size()) {
-                    throw new ForbiddenException("Missing some of the required roles: " + requiredRolesSet);
+                for (long value : requiredRoles.value()) { requiredRolesIds.add(value); }
+
+                if (userRoleRepository.countByUserIdAndRoleIdIn(user.getId(), requiredRolesIds) != requiredRolesIds.size()) {
+                    throw new ForbiddenException("Missing some of the required role ids: " + requiredRolesIds);
                 }
             }
         }
