@@ -16,6 +16,7 @@ public class UserDetailsImpl implements UserDetails {
     private long id;
     private String password;
     private String username;
+    private String language;
     private boolean enabled;
 
     public UserDetailsImpl(User user) {

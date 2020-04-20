@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import dev.mm.core.coreservice.dto.request.PageRequestDto;
 import dev.mm.core.coreservice.dto.response.PageResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -13,6 +14,9 @@ import java.util.function.Consumer;
 
 @Service
 public class PaginationService {
+
+    @Value("${dev.mm.core.coreservice.pagination.defaultPageSize:10}")
+    private long defaultPageSize;
 
     @Autowired
     private EntityManager entityManager;
@@ -23,7 +27,7 @@ public class PaginationService {
     ) {
 
         long page = pageRequestDto.getPage() != null ? pageRequestDto.getPage() - 1 : 0L;
-        long size = pageRequestDto.getSize() != null ? pageRequestDto.getSize() : 10L;
+        long size = pageRequestDto.getSize() != null ? pageRequestDto.getSize() : defaultPageSize;
 
         JPAQuery jpaQuery = new JPAQuery(entityManager);
 

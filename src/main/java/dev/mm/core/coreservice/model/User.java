@@ -21,6 +21,7 @@ public class User extends BaseIdAndTimestamps {
     private String username;
     private String password;
     private boolean enabled;
+    private boolean deleted;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "user", fetch = FetchType.LAZY)
     // @QueryInit({"role.name", "role.id"})

@@ -47,7 +47,7 @@ public class CustomHandlerInterceptor extends HandlerInterceptorAdapter {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
             User user = userRepository
-                    .findById(userDetails.getId())
+                    .findByIdAndDeletedIsFalseAndEnabledIsTrue(userDetails.getId())
                     .orElseThrow(() -> new ForbiddenException("Non existing user"));
 
             RequiredRoles requiredRoles = handlerMethod.getMethodAnnotation(RequiredRoles.class);

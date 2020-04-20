@@ -1,0 +1,9 @@
+{
+  "en": {
+    "Username must not be blank": "Username must not be blank",
+    "Username already taken": "Username already taken",
+    "Password must not be blank": "Password must not be blank",
+    "Password must have more than 6 chars": "Password must have more than 6 chars",
+    "Enabled must be set true or false": "Enabled must be set true or false"
+  }
+}

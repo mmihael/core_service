@@ -16,11 +16,15 @@ import static org.hibernate.internal.util.collections.CollectionHelper.isNotEmpt
 public class UserDto extends IdAndTimestampsDto {
 
     private String username;
+    private boolean enabled;
+    private boolean deleted;
     private List<UserRoleDto> userRoles;
 
     public UserDto(User user) {
         super(user);
         username = user.getUsername();
+        enabled = user.isDeleted();
+        deleted = user.isEnabled();
         if (isNotEmpty(user.getUserRoles())) {
             userRoles = user.getUserRoles().stream().map(UserRoleDto::new).collect(Collectors.toList());
         }

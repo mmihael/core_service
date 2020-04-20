@@ -3,14 +3,23 @@ package dev.mm.core.coreservice.service;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import dev.mm.core.coreservice.dto.response.PageResponseDto;
+import dev.mm.core.coreservice.dto.user.CreateUpdateUserDto;
 import dev.mm.core.coreservice.dto.user.UserDto;
 import dev.mm.core.coreservice.dto.user.UserPageRequestDto;
+import dev.mm.core.coreservice.exception.EntityNotFoundException;
 import dev.mm.core.coreservice.model.QUser;
+import dev.mm.core.coreservice.model.Role;
 import dev.mm.core.coreservice.model.User;
+import dev.mm.core.coreservice.model.UserRole;
+import dev.mm.core.coreservice.repository.RoleRepository;
 import dev.mm.core.coreservice.repository.UserRepository;
+import dev.mm.core.coreservice.repository.UserRoleRepository;
+import dev.mm.core.coreservice.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,7 +35,19 @@ public class UserService {
     private PaginationService paginationService;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
+    @Autowired
+    private UserValidator userValidator;
 
     public PageResponseDto usersPage(UserPageRequestDto userPageRequestDto) {
 
@@ -37,14 +58,14 @@ public class UserService {
 
             JPAQuery queryBase = jpaQuery.from(QUser.user);
 
-            BooleanExpression booleanExpression = null;
+            BooleanExpression booleanExpression = QUser.user.deleted.eq(false);
 
             if (isNotEmpty(hasAnyRoleId)) {
                 booleanExpression = QUser.user.userRoles.any().userId.in(hasAnyRoleId);
             }
 
             if (isNotBlank(username)) {
-                BooleanExpression subExpression = QUser.user.username.likeIgnoreCase(username);
+                BooleanExpression subExpression = QUser.user.username.containsIgnoreCase(username);
                 booleanExpression = booleanExpression != null ? booleanExpression.and(subExpression) : subExpression;
             }
 
@@ -63,4 +84,68 @@ public class UserService {
 
         return pageResponseDto;
     }
+
+    public UserDto getUserDtoById(long userId) {
+        return new UserDto(getUserOrThrow(userId));
+    }
+
+    public UserDto validateAndCreateUser(CreateUpdateUserDto createUpdateUserDto) {
+        userValidator.validateCreateRequest(createUpdateUserDto);
+        return createUser(createUpdateUserDto);
+    }
+
+    public UserDto createUser(CreateUpdateUserDto createUpdateUserDto) {
+
+        User user = new User();
+        user.setUsername(createUpdateUserDto.getUsername());
+        user.setPassword(passwordEncoder.encode(createUpdateUserDto.getPassword()));
+        user.setEnabled(createUpdateUserDto.getEnabled());
+
+        if (isNotEmpty(createUpdateUserDto.getRoleIds())) {
+            setGroupsToUser(user, createUpdateUserDto.getRoleIds());
+        }
+
+        return new UserDto(userRepository.save(user));
+    }
+
+    public UserDto validateAndUpdateUser(long userId, CreateUpdateUserDto createUpdateUserDto) {
+        userValidator.validateUpdateRequest(createUpdateUserDto);
+        return updateUser(userId, createUpdateUserDto);
+    }
+
+    public UserDto updateUser(long userId, CreateUpdateUserDto createUpdateUserDto) {
+
+        User user = getUserOrThrow(userId);
+
+        user.setEnabled(createUpdateUserDto.getEnabled());
+        user.setUserRoles(new HashSet<>());
+
+        if (isNotEmpty(createUpdateUserDto.getRoleIds())) {
+            setGroupsToUser(user, createUpdateUserDto.getRoleIds());
+        }
+
+        return new UserDto(userRepository.save(user));
+    }
+
+    public UserDto deleteUser(long userId) {
+        User user = getUserOrThrow(userId);
+        user.setDeleted(true);
+        return new UserDto(userRepository.save(user));
+    }
+
+    private User getUserOrThrow(long userId) {
+        return userRepository
+            .findAllWithRolesWhereUserId(userId)
+            .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " not found"));
+    }
+
+    private void setGroupsToUser(User user, Set<Long> roleIds) {
+        for (Role role : roleRepository.findAllById(roleIds)) {
+            UserRole userRole = new UserRole();
+            userRole.setUser(user);
+            userRole.setRole(role);
+            user.getUserRoles().add(userRole);
+        }
+    }
+
 }
