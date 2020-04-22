@@ -1,10 +1,11 @@
 CREATE TABLE `role` (
   `id` bigint(20) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO `role` (id, name) VALUES (1, 'ADMIN');
+INSERT INTO `role` (id, name) VALUES (1, 'SUPER_ADMIN');
 
 CREATE TABLE `user` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

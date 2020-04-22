@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.hibernate.internal.util.collections.CollectionHelper.isNotEmpty;
+import static dev.mm.core.coreservice.util.TranslationUtil.translate;
+import static java.util.Collections.singletonMap;
 
 @Service
 public class UserService {
@@ -133,10 +135,14 @@ public class UserService {
         return new UserDto(userRepository.save(user));
     }
 
-    private User getUserOrThrow(long userId) {
+    public User getUserOrThrow(long userId) {
         return userRepository
             .findAllWithRolesWhereUserId(userId)
-            .orElseThrow(() -> new EntityNotFoundException("User with id " + userId + " not found"));
+            .orElseThrow(
+                () -> new EntityNotFoundException(
+                    translate("User with {{ id }} not found", singletonMap("id", userId))
+                )
+            );
     }
 
     private void setGroupsToUser(User user, Set<Long> roleIds) {
