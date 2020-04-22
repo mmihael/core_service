@@ -6,6 +6,13 @@
     "Password must have more than 6 chars": "Password must have more than 6 chars",
     "Enabled must be set true or false": "Enabled must be set true or false",
     "Required super admin role": "Required super admin role",
-    "User with id: {{ id }} not found": "User with id: {{ id }} not found"
+    "User with id: {{ id }} not found": "User with id: {{ id }} not found",
+    "Required organization owner role": "Required organization owner role",
+    "User with id: {{ userId }} not found in organization with id: {{ organizationId }}": "User with id: {{ userId }} not found in organization with id: {{ organizationId }}",
+    "Some of roles do not exist or not organization level roles": "Some of roles do not exist or not organization level roles",
+    "Organization with id: {{ id }} not found": "Organization with id: {{ id }} not found",
+    "At least one role is required for user in organization": "At least one role is required for user in organization",
+    "Name must not be blank": "Name must not be blank",
+    "Name already taken": "Name already taken"
   }
 }

@@ -14,5 +14,6 @@ public class UserPageRequestDto extends PageRequestDto {
 
     private String username;
     private Set<Long> hasAnyRoleId;
+    private Long notInOrganizationId;
 
 }

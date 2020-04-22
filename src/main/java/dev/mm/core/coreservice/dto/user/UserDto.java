@@ -21,12 +21,18 @@ public class UserDto extends IdAndTimestampsDto {
     private List<UserRoleDto> userRoles;
 
     public UserDto(User user) {
+        this(user, true);
+    }
+
+    public UserDto(User user, boolean includeRelations) {
         super(user);
         username = user.getUsername();
         enabled = user.isEnabled();
         deleted = user.isDeleted();
-        if (isNotEmpty(user.getUserRoles())) {
-            userRoles = user.getUserRoles().stream().map(UserRoleDto::new).collect(Collectors.toList());
+        if (includeRelations) {
+            if (isNotEmpty(user.getUserRoles())) {
+                userRoles = user.getUserRoles().stream().map(UserRoleDto::new).collect(Collectors.toList());
+            }
         }
     }
 

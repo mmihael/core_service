@@ -2,6 +2,7 @@ package dev.mm.core.coreservice.validator;
 
 import dev.mm.core.coreservice.dto.user.CreateUpdateUserDto;
 import dev.mm.core.coreservice.exception.ValidationErrorException;
+import dev.mm.core.coreservice.repository.RoleRepository;
 import dev.mm.core.coreservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,13 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 public class UserValidator {
 
     @Autowired
+    private UserRoleValidator userRoleValidator;
+
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     public void validateCreateRequest(CreateUpdateUserDto createUpdateUserDto) {
 
@@ -41,4 +48,19 @@ public class UserValidator {
             throw new ValidationErrorException("enabled", translate("Enabled must be set true or false"));
         }
     }
+
+    public void validateCreateForOrganizationRequest(CreateUpdateUserDto createUpdateUserDto) {
+        validateCreateRequest(createUpdateUserDto);
+        validateRoleIdsAreForOrganization(createUpdateUserDto);
+    }
+
+    public void validateUpdateForOrganizationRequest(CreateUpdateUserDto createUpdateUserDto) {
+        validateUpdateRequest(createUpdateUserDto);
+        validateRoleIdsAreForOrganization(createUpdateUserDto);
+    }
+
+    public void validateRoleIdsAreForOrganization(CreateUpdateUserDto createUpdateUserDto) {
+        userRoleValidator.validateRoleIdsAreForOrganization(createUpdateUserDto.getRoleIds());
+    }
+
 }

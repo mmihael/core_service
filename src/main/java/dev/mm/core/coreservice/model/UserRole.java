@@ -29,4 +29,11 @@ public class UserRole extends BaseIdAndTimestamps {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    @Column(name = "organization_id", insertable = false, updatable = false)
+    private Long organizationId;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
+
 }

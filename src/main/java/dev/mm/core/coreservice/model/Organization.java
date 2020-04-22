@@ -5,19 +5,15 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
-@Entity
 @Getter
 @Setter
-public class Role {
-
-    @Id
-    private long id;
+@Entity
+public class Organization extends BaseIdAndTimestamps {
 
     @Column(unique = true)
     private String name;
 
-    private boolean organizationRole;
+    private boolean deleted;
 
 }

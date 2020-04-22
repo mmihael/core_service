@@ -10,9 +10,11 @@ public class RoleDto {
 
     private long id;
     private String name;
+    private boolean organizationRole;
 
     public RoleDto(Role role) {
         id = role.getId();
         name = role.getName();
+        organizationRole = role.isOrganizationRole();
     }
 }

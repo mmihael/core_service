@@ -1,4 +1,4 @@
-package dev.mm.core.coreservice.controller;
+package dev.mm.core.coreservice.controller.app;
 
 import dev.mm.core.coreservice.dto.user.CreateUpdateUserDto;
 import dev.mm.core.coreservice.dto.user.UserPageRequestDto;

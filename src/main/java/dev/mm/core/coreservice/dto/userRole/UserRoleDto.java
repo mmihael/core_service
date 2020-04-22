@@ -12,12 +12,20 @@ public class UserRoleDto extends IdAndTimestampsDto {
 
     private long userId;
     private long roleId;
+    private Long organizationId;
     private RoleDto role;
 
     public UserRoleDto(UserRole userRole) {
+        this(userRole, true);
+    }
+
+    public UserRoleDto(UserRole userRole, boolean includeRelations) {
         super(userRole);
         this.userId = userRole.getUserId();
         this.roleId = userRole.getRoleId();
-        this.role = new RoleDto(userRole.getRole());
+        this.organizationId = userRole.getOrganizationId();
+        if (includeRelations) {
+            this.role = new RoleDto(userRole.getRole());
+        }
     }
 }
