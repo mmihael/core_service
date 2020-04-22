@@ -4,11 +4,14 @@ public class Uris {
 
     public static final String API = "/api";
     public static final String USER = "/user";
+    public static final String APP_CONFIGURATION = "/app-configuration";
 
     public static final String API_LOGIN = API + "/login";
     public static final String API_LOGOUT = API + "/logout";
 
     public static final String API_USER = API + USER;
     public static final String API_USER_ID = API_USER + "/{userId}";
+
+    public static final String API_APP_CONFIGURATION = API + APP_CONFIGURATION;
 
 }

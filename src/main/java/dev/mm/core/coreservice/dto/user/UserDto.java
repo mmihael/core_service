@@ -23,8 +23,8 @@ public class UserDto extends IdAndTimestampsDto {
     public UserDto(User user) {
         super(user);
         username = user.getUsername();
-        enabled = user.isDeleted();
-        deleted = user.isEnabled();
+        enabled = user.isEnabled();
+        deleted = user.isDeleted();
         if (isNotEmpty(user.getUserRoles())) {
             userRoles = user.getUserRoles().stream().map(UserRoleDto::new).collect(Collectors.toList());
         }

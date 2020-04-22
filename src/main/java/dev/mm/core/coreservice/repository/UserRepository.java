@@ -17,10 +17,10 @@ public interface UserRepository extends JpaQueryDslRepository<User, Long> {
 
     Optional<User> findByIdAndDeletedIsFalseAndEnabledIsTrue(long id);
 
-    @Query("SELECT u FROM User u inner join fetch u.userRoles ur inner join fetch ur.role r where u.id = ?1 and u.deleted = false")
+    @Query("SELECT distinct u FROM User u left join fetch u.userRoles ur left join fetch ur.role r where u.id = ?1 and u.deleted = false")
     Optional<User> findAllWithRolesWhereUserId(long userId);
 
-    @Query("SELECT u FROM User u left join fetch u.userRoles ur left join fetch ur.role r where u.id in ?1")
+    @Query("SELECT distinct u FROM User u left join fetch u.userRoles ur left join fetch ur.role r where u.id in ?1")
     List<User> findAllWithRolesWhereUserIdIn(Set<Long> userIds);
 
 }

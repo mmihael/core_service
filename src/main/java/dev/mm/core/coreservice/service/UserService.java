@@ -80,15 +80,17 @@ public class UserService {
         Set<Long> userIds = ((List<User>) pageResponseDto.getContent()).stream().map(User::getId)
             .collect(Collectors.toSet());
 
-        pageResponseDto.setContent(
-            userRepository.findAllWithRolesWhereUserIdIn(userIds).stream().map(UserDto::new).collect(toList())
-        );
+        if (!userIds.isEmpty()) {
+            pageResponseDto.setContent(
+                userRepository.findAllWithRolesWhereUserIdIn(userIds).stream().map(UserDto::new).collect(toList())
+            );
+        }
 
         return pageResponseDto;
     }
 
     public UserDto getUserDtoById(long userId) {
-        return new UserDto(getUserOrThrow(userId));
+        return new UserDto(getUserWithRolesOrThrow(userId));
     }
 
     public UserDto validateAndCreateUser(CreateUpdateUserDto createUpdateUserDto) {
@@ -117,7 +119,7 @@ public class UserService {
 
     public UserDto updateUser(long userId, CreateUpdateUserDto createUpdateUserDto) {
 
-        User user = getUserOrThrow(userId);
+        User user = getUserWithRolesOrThrow(userId);
 
         user.setEnabled(createUpdateUserDto.getEnabled());
         user.setUserRoles(new HashSet<>());
@@ -130,17 +132,17 @@ public class UserService {
     }
 
     public UserDto deleteUser(long userId) {
-        User user = getUserOrThrow(userId);
+        User user = getUserWithRolesOrThrow(userId);
         user.setDeleted(true);
         return new UserDto(userRepository.save(user));
     }
 
-    public User getUserOrThrow(long userId) {
+    public User getUserWithRolesOrThrow(long userId) {
         return userRepository
             .findAllWithRolesWhereUserId(userId)
             .orElseThrow(
                 () -> new EntityNotFoundException(
-                    translate("User with {{ id }} not found", singletonMap("id", userId))
+                    translate("User with id: {{ id }} not found", singletonMap("id", userId))
                 )
             );
     }
