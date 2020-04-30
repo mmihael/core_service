@@ -1,9 +1,10 @@
-package dev.mm.core.coreservice.security;
+package dev.mm.core.coreservice.service;
 
 import dev.mm.core.coreservice.exception.EntityNotFoundException;
 import dev.mm.core.coreservice.exception.ForbiddenException;
 import dev.mm.core.coreservice.repository.OrganizationRepository;
 import dev.mm.core.coreservice.repository.UserRoleRepository;
+import dev.mm.core.coreservice.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -3,7 +3,7 @@ package dev.mm.core.coreservice.controller.app;
 import dev.mm.core.coreservice.dto.organization.AssignUsersToOrganizationRequestDto;
 import dev.mm.core.coreservice.dto.organization.CreateOrganizationDto;
 import dev.mm.core.coreservice.dto.organization.OrganizationPageRequestDto;
-import dev.mm.core.coreservice.security.AuthorizationService;
+import dev.mm.core.coreservice.service.AuthorizationService;
 import dev.mm.core.coreservice.security.UserDetailsImpl;
 import dev.mm.core.coreservice.service.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;

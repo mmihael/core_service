@@ -24,7 +24,9 @@ import dev.mm.core.coreservice.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -73,6 +75,7 @@ public class UserService {
         String username = userPageRequestDto.getUsername();
         Set<Long> hasAnyRoleId = userPageRequestDto.getHasAnyRoleId();
         Long notInOrganizationId = userPageRequestDto.getNotInOrganizationId();
+        Long inOrganizationId = userPageRequestDto.getInOrganizationId();
 
         PageResponseDto pageResponseDto = paginationService.getPage(userPageRequestDto, jpaQuery -> {
 
@@ -155,11 +158,13 @@ public class UserService {
         return new UserDto(getUserFromOrganizationWithRolesOrThrow(organizationId, userId));
     }
 
+    @Transactional
     public UserDto validateAndCreateUser(CreateUpdateUserDto createUpdateUserDto) {
         userValidator.validateCreateRequest(createUpdateUserDto);
         return createUser(createUpdateUserDto);
     }
 
+    @Transactional
     public UserDto validateAndCreateUserInOrganization(CreateUpdateUserDto createUpdateUserDto, long organizationId) {
         userValidator.validateCreateForOrganizationRequest(createUpdateUserDto);
         return createUser(createUpdateUserDto, organizationId);
@@ -183,11 +188,13 @@ public class UserService {
         return new UserDto(userRepository.save(user));
     }
 
+    @Transactional
     public UserDto validateAndUpdateUser(long userId, CreateUpdateUserDto createUpdateUserDto) {
         userValidator.validateUpdateRequest(createUpdateUserDto);
         return updateUser(userId, createUpdateUserDto);
     }
 
+    @Transactional
     public UserDto validateAndUpdateUserInOrganization(
         long userId,
         CreateUpdateUserDto createUpdateUserDto,
@@ -203,15 +210,46 @@ public class UserService {
 
     public UserDto updateUser(long userId, CreateUpdateUserDto createUpdateUserDto, Long organizationId) {
 
-        User user = organizationId != null ?
-                getUserFromOrganizationWithRolesOrThrow(organizationId, userId) :
-                getUserWithRolesOrThrow(userId);
+        User user = null;
+
+        Set<Long> roleIdsForUpdate;
+
+        if (organizationId != null) {
+            user = getUserFromOrganizationWithRolesOrThrow(organizationId, userId);
+            Set<Long> roleIds = createUpdateUserDto.getRoleIds();
+            List<UserRole> organizationRolesForDelete = new ArrayList<>();
+            List<UserRole> organizationRolesToKeep = new ArrayList<>();
+            user.getUserRoles().stream()
+                .filter(userRole -> organizationId.equals(userRole.getOrganizationId()))
+                .forEach(userRole -> {
+                    if (roleIds.contains(userRole.getRoleId())) {
+                        organizationRolesToKeep.add(userRole);
+                    } else {
+                        organizationRolesForDelete.add(userRole);
+                    }
+                });
+
+            Set<Long> userRoleIdsForOrganization = new HashSet<>();
+            organizationRolesForDelete.forEach(userRole -> {
+                userRoleIdsForOrganization.add(userRole.getId());
+                userRole.setOrganization(null);
+                userRole.setRole(null);
+                userRole.setUser(null);
+            });
+            user.getUserRoles().removeIf(userRole -> userRoleIdsForOrganization.contains(userRole.getId()));
+            userRoleRepository.deleteAll(organizationRolesForDelete);
+            Set<Long> presentRoleIds = organizationRolesToKeep.stream().map(UserRole::getRoleId).collect(toSet());
+            roleIdsForUpdate = roleIds.stream().filter(id -> !presentRoleIds.contains(id)).collect(toSet());
+        } else {
+            userRoleRepository.deleteByUserIdAndOrganizationIdIsNull(userId);
+            user = getUserWithRolesOrThrow(userId);
+            roleIdsForUpdate = createUpdateUserDto.getRoleIds();
+        }
 
         user.setEnabled(createUpdateUserDto.getEnabled());
-        user.setUserRoles(new HashSet<>());
 
-        if (isNotEmpty(createUpdateUserDto.getRoleIds())) {
-            setGroupsToUser(user, createUpdateUserDto.getRoleIds(), organizationId);
+        if (isNotEmpty(roleIdsForUpdate)) {
+            setGroupsToUser(user, roleIdsForUpdate, organizationId);
         }
 
         return new UserDto(userRepository.save(user));

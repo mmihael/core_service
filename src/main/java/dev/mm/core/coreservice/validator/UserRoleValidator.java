@@ -15,13 +15,16 @@ public class UserRoleValidator {
     @Autowired
     private RoleRepository roleRepository;
 
-    public void validateRoleIdsAreForOrganization(Set<Long> roleIds) {
-        if (roleIds == null || roleIds.isEmpty()) {
+    public void validateRoleIdsAreNotForOrganization(Set<Long> roleIds) {
+        if (roleRepository.countByIdInAndOrganizationRoleIsFalse(roleIds) != roleIds.size()) {
             throw new ValidationErrorException(
-                "roleIds", translate("At least one role is required for user in organization")
+                "roleIds", translate("Some of roles do not exist or are organization level roles")
             );
         }
-        if (roleRepository.countByIdInAndOrganizationRoleIsTrue(roleIds) != roleIds.size()) {
+    }
+
+    public void validateRoleIdsAreForOrganization(Set<Long> roleIds) {
+        if (roleIds != null && !roleIds.isEmpty() && roleRepository.countByIdInAndOrganizationRoleIsTrue(roleIds) != roleIds.size()) {
             throw new ValidationErrorException(
                 "roleIds", translate("Some of roles do not exist or not organization level roles")
             );

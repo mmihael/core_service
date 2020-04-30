@@ -5,6 +5,7 @@ public class Uris {
     public static final String API = "/api";
     public static final String USER = "/user";
     public static final String ORGANIZATION = "/organization";
+    public static final String ROLE = "/role";
     public static final String APP_CONFIGURATION = "/app-configuration";
 
     public static final String API_LOGIN = API + "/login";
@@ -12,6 +13,8 @@ public class Uris {
 
     public static final String API_USER = API + USER;
     public static final String API_USER_ID = API_USER + "/{userId}";
+
+    public static final String API_ROLE = API + ROLE;
 
     public static final String API_ORGANIZATION = API + ORGANIZATION;
     public static final String API_ORGANIZATION_ID = API_ORGANIZATION + "/{organizationId}";

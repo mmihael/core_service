@@ -2,6 +2,7 @@ package dev.mm.core.coreservice.controller.organization;
 
 import dev.mm.core.coreservice.dto.response.OrgAppConfigurationResponse;
 import dev.mm.core.coreservice.security.UserDetailsImpl;
+import dev.mm.core.coreservice.service.AppConfigurationService;
 import dev.mm.core.coreservice.service.OrganizationService;
 import dev.mm.core.coreservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +18,15 @@ import static dev.mm.core.coreservice.constants.Uris.API_ORGANIZATION_APP_CONFIG
 public class OrgAppConfigurationController {
 
     @Autowired
-    private UserService userService;
+    private AppConfigurationService appConfigurationService;
 
-    @Autowired
-    private OrganizationService organizationService;
 
     @GetMapping(API_ORGANIZATION_APP_CONFIGURATION)
     public ResponseEntity getAppConfiguration(
         @PathVariable long organizationId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return ResponseEntity.ok(new OrgAppConfigurationResponse(
-            userService.getUserFromOrganizationById(organizationId, userDetails.getId()),
-            organizationService.getOrganizationDtoById(organizationId)
-        ));
+        return ResponseEntity.ok(appConfigurationService.getOrganizationAppConfigurationFor(organizationId, userDetails));
     }
 
 }

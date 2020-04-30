@@ -33,8 +33,10 @@ public class PaginationService {
 
         jpaQueryConsumer.accept(jpaQuery);
 
-        jpaQuery.limit(size);
-        jpaQuery.offset(page * size);
+        if (size > 0) {
+            jpaQuery.limit(size);
+            jpaQuery.offset(page * size);
+        }
 
         QueryResults<?> results = jpaQuery.fetchResults();
 

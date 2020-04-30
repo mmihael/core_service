@@ -9,6 +9,8 @@ public interface RoleRepository extends JpaQueryDslRepository<Role, Long> {
 
     int  countByIdInAndOrganizationRoleIsTrue(Set<Long> roleIds);
 
+    int  countByIdInAndOrganizationRoleIsFalse(Set<Long> roleIds);
+
     List<Role> findByIdInAndOrganizationRoleIsTrue(Set<Long> roleIds);
 
 }

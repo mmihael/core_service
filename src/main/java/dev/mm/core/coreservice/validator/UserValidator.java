@@ -4,11 +4,14 @@ import dev.mm.core.coreservice.dto.user.CreateUpdateUserDto;
 import dev.mm.core.coreservice.exception.ValidationErrorException;
 import dev.mm.core.coreservice.repository.RoleRepository;
 import dev.mm.core.coreservice.repository.UserRepository;
+import org.hibernate.internal.util.collections.CollectionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static dev.mm.core.coreservice.util.TranslationUtil.translate;
 import static org.apache.logging.log4j.util.Strings.isBlank;
+import static org.hibernate.internal.util.collections.CollectionHelper.isEmpty;
+import static org.hibernate.internal.util.collections.CollectionHelper.isNotEmpty;
 
 @Service
 public class UserValidator {
@@ -23,6 +26,17 @@ public class UserValidator {
     private RoleRepository roleRepository;
 
     public void validateCreateRequest(CreateUpdateUserDto createUpdateUserDto) {
+
+        validateCreateRequestCommon(createUpdateUserDto);
+
+        if (isNotEmpty(createUpdateUserDto.getRoleIds())) {
+            userRoleValidator.validateRoleIdsAreNotForOrganization(createUpdateUserDto.getRoleIds());
+        }
+
+        validateUpdateRequest(createUpdateUserDto);
+    }
+
+    public void validateCreateRequestCommon(CreateUpdateUserDto createUpdateUserDto) {
 
         if (isBlank(createUpdateUserDto.getUsername())) {
             throw new ValidationErrorException("username", translate("Username must not be blank"));
@@ -39,8 +53,6 @@ public class UserValidator {
         if (createUpdateUserDto.getPassword().length() < 7) {
             throw new ValidationErrorException("password", translate("Password must have more than 6 chars"));
         }
-
-        validateUpdateRequest(createUpdateUserDto);
     }
 
     public void validateUpdateRequest(CreateUpdateUserDto createUpdateUserDto) {
@@ -50,16 +62,19 @@ public class UserValidator {
     }
 
     public void validateCreateForOrganizationRequest(CreateUpdateUserDto createUpdateUserDto) {
-        validateCreateRequest(createUpdateUserDto);
-        validateRoleIdsAreForOrganization(createUpdateUserDto);
+        validateCreateRequestCommon(createUpdateUserDto);
+        validateRoleIdsArePresentAndForOrganization(createUpdateUserDto);
     }
 
     public void validateUpdateForOrganizationRequest(CreateUpdateUserDto createUpdateUserDto) {
         validateUpdateRequest(createUpdateUserDto);
-        validateRoleIdsAreForOrganization(createUpdateUserDto);
+        validateRoleIdsArePresentAndForOrganization(createUpdateUserDto);
     }
 
-    public void validateRoleIdsAreForOrganization(CreateUpdateUserDto createUpdateUserDto) {
+    public void validateRoleIdsArePresentAndForOrganization(CreateUpdateUserDto createUpdateUserDto) {
+        if (isEmpty(createUpdateUserDto.getRoleIds())) {
+            throw new ValidationErrorException("roleIds", translate("At least one role is required"));
+        }
         userRoleValidator.validateRoleIdsAreForOrganization(createUpdateUserDto.getRoleIds());
     }
 
