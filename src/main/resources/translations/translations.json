@@ -13,6 +13,13 @@
     "Organization with id: {{ id }} not found": "Organization with id: {{ id }} not found",
     "At least one role is required for user in organization": "At least one role is required for user in organization",
     "Name must not be blank": "Name must not be blank",
-    "Name already taken": "Name already taken"
+    "Name already taken": "Name already taken",
+    "File with id: {{ id }} not found in organization": "File with id: {{ id }} not found in organization",
+    "Only organization owner or file owner can delete file": "Only organization owner or file owner can delete file",
+    "Required organization owner or member role": "Required organization owner or member role",
+    "Access type can't be null": "Access type can't be null",
+    "Public file with id: {{ id }} not found": "Public file with id: {{ id }} not found",
+    "Only organization owner or file owner can edit file": "Only organization owner or file owner can edit file",
+    "Only organization owner or file owner can access file": "Only organization owner or file owner can access file"
   }
 }

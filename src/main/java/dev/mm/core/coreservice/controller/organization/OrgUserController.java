@@ -2,8 +2,8 @@ package dev.mm.core.coreservice.controller.organization;
 
 import dev.mm.core.coreservice.dto.user.CreateUpdateUserDto;
 import dev.mm.core.coreservice.dto.user.UserPageRequestDto;
-import dev.mm.core.coreservice.service.AuthorizationService;
 import dev.mm.core.coreservice.security.UserDetailsImpl;
+import dev.mm.core.coreservice.service.AuthorizationService;
 import dev.mm.core.coreservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ public class OrgUserController {
         UserPageRequestDto userPageRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        authorizationService.ensureUserIsOrganizationOwner(organizationId, userDetails);
+        authorizationService.ensureUserIsOrganizationOwner(organizationId, userDetails.getId());
         return ResponseEntity.ok(userService.usersPage(organizationId, userPageRequestDto));
     }
 
@@ -44,7 +44,7 @@ public class OrgUserController {
         @PathVariable long userId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        authorizationService.ensureUserIsOrganizationOwner(organizationId, userDetails);
+        authorizationService.ensureUserIsOrganizationOwner(organizationId, userDetails.getId());
         return ResponseEntity.ok(userService.getUserFromOrganizationById(organizationId, userId));
     }
 
@@ -54,7 +54,7 @@ public class OrgUserController {
         @RequestBody CreateUpdateUserDto createUpdateUserDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        authorizationService.ensureUserIsOrganizationOwner(organizationId, userDetails);
+        authorizationService.ensureUserIsOrganizationOwner(organizationId, userDetails.getId());
         return ResponseEntity.ok(userService.validateAndCreateUserInOrganization(createUpdateUserDto, organizationId));
     }
 
@@ -65,7 +65,7 @@ public class OrgUserController {
         @RequestBody CreateUpdateUserDto createUpdateUserDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        authorizationService.ensureUserIsOrganizationOwner(organizationId, userDetails);
+        authorizationService.ensureUserIsOrganizationOwner(organizationId, userDetails.getId());
         return ResponseEntity
             .ok(userService.validateAndUpdateUserInOrganization(userId, createUpdateUserDto, organizationId));
     }
@@ -76,7 +76,7 @@ public class OrgUserController {
         @PathVariable long userId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        authorizationService.ensureUserIsOrganizationOwner(organizationId, userDetails);
+        authorizationService.ensureUserIsOrganizationOwner(organizationId, userDetails.getId());
         return ResponseEntity.ok(userService.deleteUserInOrganization(userId, organizationId));
     }
 

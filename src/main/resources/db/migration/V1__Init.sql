@@ -43,8 +43,8 @@ CREATE TABLE `user_role` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_role` (`organization_id`, `user_id`, `role_id`),
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `role_id` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`),
-  CONSTRAINT `organization_id` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
+  CONSTRAINT `user_role_role_id` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`),
+  CONSTRAINT `user_role_organization_id` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`)
 ) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 INSERT INTO `user` (created_at, updated_at, username, password, enabled) VALUES
@@ -53,3 +53,24 @@ INSERT INTO `user` (created_at, updated_at, username, password, enabled) VALUES
 INSERT INTO `user_role` (user_id, role_id, created_at, updated_at, organization_id) VALUES
 ((SELECT MAX(id) FROM user), 1, NOW(), NOW(), null),
 ((SELECT MAX(id) FROM user), 2, NOW(), NOW(), (SELECT MAX(id) FROM organization));
+
+CREATE TABLE `file` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `created_at` datetime(6) DEFAULT NULL,
+  `updated_at` datetime(6) DEFAULT NULL,
+  `uuid` varchar(255) COLLATE utf8_bin NOT NULL,
+  `original_name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `url` varchar(255) COLLATE utf8_bin NOT NULL,
+  `file_type` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `access_type` int NOT NULL DEFAULT 0,
+  `size` bigint(20) NOT NULL,
+  `width` bigint(20) DEFAULT NULL,
+  `height` bigint(20) DEFAULT NULL,
+  `length` bigint(20) DEFAULT NULL,
+  `owner_id` bigint(20) DEFAULT NULL,
+  `organization_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `file_uuid` (`uuid`),
+  CONSTRAINT `file_organization_id` FOREIGN KEY (`organization_id`) REFERENCES `organization` (`id`),
+  CONSTRAINT `file_owner_id` FOREIGN KEY (`owner_id`) REFERENCES `user` (`id`)
+) DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

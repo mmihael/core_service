@@ -45,6 +45,8 @@ import static org.hibernate.internal.util.collections.CollectionHelper.isNotEmpt
 @Service
 public class UserService {
 
+    private static final String USER_WITH_ID_NOT_FOUND_TEMPLATE = "User with id: {{ id }} not found";
+
     @Autowired
     private PaginationService paginationService;
 
@@ -267,12 +269,22 @@ public class UserService {
         return new UserDto(userRepository.save(user));
     }
 
+    public User getUserOrThrow(long userId) {
+        return userRepository
+            .findById(userId)
+            .orElseThrow(
+                () -> new EntityNotFoundException(
+                    translate(USER_WITH_ID_NOT_FOUND_TEMPLATE, singletonMap("id", userId))
+                )
+            );
+    }
+
     public User getUserWithRolesOrThrow(long userId) {
         return userRepository
             .findAllWithRolesWhereUserId(userId)
             .orElseThrow(
                 () -> new EntityNotFoundException(
-                    translate("User with id: {{ id }} not found", singletonMap("id", userId))
+                    translate(USER_WITH_ID_NOT_FOUND_TEMPLATE, singletonMap("id", userId))
                 )
             );
     }

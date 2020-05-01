@@ -1,7 +1,6 @@
 package dev.mm.core.coreservice.service;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import dev.mm.core.coreservice.dto.request.PageRequestDto;
 import dev.mm.core.coreservice.dto.response.PageResponseDto;
 import dev.mm.core.coreservice.dto.role.RoleDto;
 import dev.mm.core.coreservice.dto.role.RolePageRequestDto;

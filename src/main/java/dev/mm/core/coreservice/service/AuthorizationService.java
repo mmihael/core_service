@@ -8,6 +8,10 @@ import dev.mm.core.coreservice.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
+import static dev.mm.core.coreservice.constants.Role.ORGANIZATION_MEMBER;
 import static dev.mm.core.coreservice.constants.Role.ORGANIZATION_OWNER;
 import static dev.mm.core.coreservice.constants.Role.SUPER_ADMIN;
 import static dev.mm.core.coreservice.util.TranslationUtil.translate;
@@ -29,13 +33,23 @@ public class AuthorizationService {
         }
     }
 
-    public void ensureUserIsOrganizationOwner(long organizationId, UserDetailsImpl userDetails) {
+    public void ensureUserIsOrganizationOwner(long organizationId, long userId) {
         ensureOrganizationExists(organizationId);
         int rolesCount = userRoleRepository.countByOrganizationIdAndUserIdAndRoleIdIn(
-            organizationId, userDetails.getId(), singleton(ORGANIZATION_OWNER.id)
+            organizationId, userId, singleton(ORGANIZATION_OWNER.id)
         );
         if (rolesCount != 1) {
             throw new ForbiddenException(translate("Required organization owner role"));
+        }
+    }
+
+    public void ensureUserIsOrganizationOwnerOrMember(long organizationId, long userId) {
+        ensureOrganizationExists(organizationId);
+        int rolesCount = userRoleRepository.countByOrganizationIdAndUserIdAndRoleIdIn(
+            organizationId, userId, new HashSet<>(Arrays.asList(ORGANIZATION_OWNER.id, ORGANIZATION_MEMBER.id))
+        );
+        if (rolesCount < 1) {
+            throw new ForbiddenException(translate("Required organization owner or member role"));
         }
     }
 

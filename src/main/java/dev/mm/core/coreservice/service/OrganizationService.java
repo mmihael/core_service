@@ -1,7 +1,6 @@
 package dev.mm.core.coreservice.service;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
 import dev.mm.core.coreservice.dto.organization.AssignUsersToOrganizationRequestDto;
 import dev.mm.core.coreservice.dto.organization.CreateOrganizationDto;
 import dev.mm.core.coreservice.dto.organization.OrganizationDto;

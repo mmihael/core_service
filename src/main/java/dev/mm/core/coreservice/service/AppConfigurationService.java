@@ -5,19 +5,15 @@ import dev.mm.core.coreservice.dto.response.AppConfigurationResponse;
 import dev.mm.core.coreservice.dto.response.OrgAppConfigurationResponse;
 import dev.mm.core.coreservice.dto.user.UserDto;
 import dev.mm.core.coreservice.dto.userRole.UserRoleDto;
-import dev.mm.core.coreservice.model.Organization;
 import dev.mm.core.coreservice.repository.OrganizationRepository;
 import dev.mm.core.coreservice.security.UserDetailsImpl;
-import org.hibernate.internal.util.collections.CollectionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;

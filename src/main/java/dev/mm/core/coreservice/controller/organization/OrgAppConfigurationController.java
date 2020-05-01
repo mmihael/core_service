@@ -1,10 +1,7 @@
 package dev.mm.core.coreservice.controller.organization;
 
-import dev.mm.core.coreservice.dto.response.OrgAppConfigurationResponse;
 import dev.mm.core.coreservice.security.UserDetailsImpl;
 import dev.mm.core.coreservice.service.AppConfigurationService;
-import dev.mm.core.coreservice.service.OrganizationService;
-import dev.mm.core.coreservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

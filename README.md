@@ -2,6 +2,13 @@
 
 Starting point for spring backend service.
 
+Features:
+
+* Users 
+* Roles
+* Organizations
+* File upload/share
+
 ## Example config
 
 ```yaml
@@ -10,6 +17,10 @@ server:
     session:
       timeout: 60m
 spring:
+  servlet:
+    multipart:
+      max-file-size: 128MB
+      max-request-size: 128MB 
   jpa:
     hibernate:
       ddl-auto: validate
@@ -21,4 +32,9 @@ spring:
     store-type: jdbc
     jdbc:
       initialize-schema: always
+dev:
+  mm:
+    core:
+      coreservice:
+        file-storage-location: /tmp/storage
 ```

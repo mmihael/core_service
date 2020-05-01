@@ -2,8 +2,8 @@ package dev.mm.core.coreservice.controller.app;
 
 import dev.mm.core.coreservice.dto.user.CreateUpdateUserDto;
 import dev.mm.core.coreservice.dto.user.UserPageRequestDto;
-import dev.mm.core.coreservice.service.AuthorizationService;
 import dev.mm.core.coreservice.security.UserDetailsImpl;
+import dev.mm.core.coreservice.service.AuthorizationService;
 import dev.mm.core.coreservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

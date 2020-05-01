@@ -4,7 +4,6 @@ import dev.mm.core.coreservice.dto.user.CreateUpdateUserDto;
 import dev.mm.core.coreservice.exception.ValidationErrorException;
 import dev.mm.core.coreservice.repository.RoleRepository;
 import dev.mm.core.coreservice.repository.UserRepository;
-import org.hibernate.internal.util.collections.CollectionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
