@@ -279,6 +279,14 @@ public class UserService {
             );
     }
 
+    public List<User> getAllUsersInOrThrow(Set<Long> userIds) {
+        List<User> users = userRepository.findAllById(userIds);
+        if (users.size() != userIds.size()) {
+            throw new EntityNotFoundException("Not able to find all users");
+        }
+        return users;
+    }
+
     public User getUserWithRolesOrThrow(long userId) {
         return userRepository
             .findAllWithRolesWhereUserId(userId)

@@ -20,6 +20,11 @@
     "Access type can't be null": "Access type can't be null",
     "Public file with id: {{ id }} not found": "Public file with id: {{ id }} not found",
     "Only organization owner or file owner can edit file": "Only organization owner or file owner can edit file",
-    "Only organization owner or file owner can access file": "Only organization owner or file owner can access file"
+    "Only organization owner or file owner can access file": "Only organization owner or file owner can access file",
+    "User ids must not be empty or null": "User ids must not be empty or null",
+    "Some of users are not part of organization": "Some of users are not part of organization",
+    "Not able to find all users": "Not able to find all users",
+    "Chat with id: {{ id }} not found in organization id: {{ organizationId }}": "Chat with id: {{ id }} not found in organization id: {{ organizationId }}",
+    "You are not part of the chat": "You are not part of the chat"
   }
 }
